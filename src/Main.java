@@ -40,6 +40,9 @@ public class Main {
                 (o1, o2) -> (o1.getAge()>o2.getAge()) ? 1 : (o1.getAge()<o2.getAge() ? -1 : 0),
                 minMaxConsumer);
 
+        List<Integer> integerList = Arrays.asList(1, 2, 5, 10, 120, 4, 15, 1988);
+        countEvenNumbers(integerList);
+
     }
 
     /**
@@ -94,6 +97,11 @@ public class Main {
     /**Реализуйте метод, который принимает на вход список целых чисел,
      * определяет в списке количество четных чисел и выводит их в консоль.
      * Решите задание именно с применением Stream API.
-     *
      */
+    public static void countEvenNumbers (List<Integer> list){
+        List<Integer> listNew = list.stream()
+                .filter(n -> n % 2==0)
+                .collect(Collectors.toCollection(ArrayList::new));
+        System.out.println("Количество четных чисел состпавляет " + listNew.size() + ": " + listNew);
+    }
 }
