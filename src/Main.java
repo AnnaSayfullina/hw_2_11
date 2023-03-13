@@ -18,10 +18,25 @@ public class Main {
         Stream<Person> stream = personList.stream();
         Stream<Person> stream1 = Stream.empty();
         BiConsumer<Person, Person> minMaxConsumer = (min, max) -> System.out.println("Самый молодой человек " + min + ", самый взрослый -  " + max);
+        /**
+         * первый вариант метода findMinMax
+         */
         findMinMax(stream,
                 (o1, o2) -> (o1.getAge()>o2.getAge()) ? 1 : (o1.getAge()<o2.getAge() ? -1 : 0),
                 minMaxConsumer);
         findMinMax(stream1,
+                (o1, o2) -> (o1.getAge()>o2.getAge()) ? 1 : (o1.getAge()<o2.getAge() ? -1 : 0),
+                minMaxConsumer);
+
+        /**
+         * второй вариант метода findMinMax
+         */
+        Stream<Person> stream2 = personList.stream();
+        Stream<Person> stream3 = Stream.empty();
+        findMinMax1(stream2,
+                (o1, o2) -> (o1.getAge()>o2.getAge()) ? 1 : (o1.getAge()<o2.getAge() ? -1 : 0),
+                minMaxConsumer);
+        findMinMax1(stream3,
                 (o1, o2) -> (o1.getAge()>o2.getAge()) ? 1 : (o1.getAge()<o2.getAge() ? -1 : 0),
                 minMaxConsumer);
 
@@ -50,11 +65,35 @@ public class Main {
             T min = list.get(0);
             T max = list.get(list.size()-1);
             minMaxConsumer.accept(min, max);
-            // пыталась найти max и min через Supplier, но бросает исключение IllegalStateException
-            // В чем ошибка?
-//            Supplier<Stream<? extends T>> streamSupplier = () -> stream;
-//            T min = streamSupplier.get().min(order).get();
-//            T max = streamSupplier.get().max(order).get();
         }
     }
+    /**
+     * второй вариант метода findMinMax. Можно ли было как-то полученный на вход Stream не собирать в List,
+     * а сразу с помощью Supplier несколько раз использовать Stream для поиска min и max
+
+     *              Supplier<Stream<? extends T>> streamSupplier = () -> stream;
+     *             T min = streamSupplier.get().min(order).get();
+     *             T max = streamSupplier.get().max(order).get();
+     *             minMaxConsumer.accept(min, max);
+     *Вот такой код не работал. Бросал исключение  IllegalStateException: stream has already been operated upon or closed
+     */
+    public static<T> void findMinMax1(Stream<? extends T> stream,
+                                     Comparator<? super T> order,
+                                     BiConsumer<? super T, ? super T> minMaxConsumer){
+        List<T> list = stream.collect(Collectors.toList());
+        if (list.isEmpty()) {
+            minMaxConsumer.accept(null, null);
+        } else {
+            Supplier<Stream<? extends T>> streamSupplier = () -> list.stream();
+            T min = streamSupplier.get().min(order).get();
+            T max = streamSupplier.get().max(order).get();
+            minMaxConsumer.accept(min, max);
+        }
+
+    }
+    /**Реализуйте метод, который принимает на вход список целых чисел,
+     * определяет в списке количество четных чисел и выводит их в консоль.
+     * Решите задание именно с применением Stream API.
+     *
+     */
 }
