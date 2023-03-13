@@ -102,6 +102,6 @@ public class Main {
         List<Integer> listNew = list.stream()
                 .filter(n -> n % 2==0)
                 .collect(Collectors.toCollection(ArrayList::new));
-        System.out.println("Количество четных чисел состпавляет " + listNew.size() + ": " + listNew);
+        System.out.println("Количество четных чисел составляет " + listNew.size() + ": " + listNew);
     }
 }
